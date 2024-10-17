@@ -1,3 +1,3 @@
-# Pre Entrega 1 Escobar Márquez
+# Pre Entrega 2 Escobar Márquez
 Curso CODERHOUSE JavaScript
 Comisión 60000
