@@ -1,12 +1,41 @@
 const tareas = [];
 // Función para agregar tareas
-function agregarTarea(tareas) {
-  const nombreTarea = prompt('¿Cuál es el nombre de la tarea?');
-  const fechaVencimiento = new Date(
-    prompt(
-      '¿Cuál es la fecha de vencimiento? (yyyy-mm-ddThh:mm:ss) (Se debe poner una "T" Entre el horario y la hora'
-    )
-  );
+function agregarTarea() {
+  let nombreTarea;
+
+  // Bucle para asegurar que se ingrese un nombre válido
+  do {
+    nombreTarea = prompt('¿Cuál es el nombre de la tarea? o escribe "salir"');
+    if (nombreTarea === null) {
+      gestionarTareas(); // Si el usuario cierra el prompt
+      return; // Salir de la función
+    }
+    if (nombreTarea.trim() === '') {
+      alert('Por favor, ingresa un nombre a la tarea.');
+    }
+  } while (nombreTarea.trim() === '');
+
+  if (nombreTarea.toLowerCase() === 'salir') {
+    gestionarTareas();
+    return;
+  }
+
+  let fechaVencimiento;
+
+  // Bucle para asegurar que se ingrese una fecha válida
+  do {
+    const fechaInput = prompt(
+      '¿Cuál es la fecha de vencimiento? (yyyy-mm-ddThh:mm:ss)'
+    );
+    if (fechaInput === null) {
+      gestionarTareas();
+      return; // Salir de la función
+    }
+    fechaVencimiento = new Date(fechaInput);
+    if (isNaN(fechaVencimiento.getTime())) {
+      alert('Por favor, ingresa una fecha de expiración válida para la tarea.');
+    }
+  } while (isNaN(fechaVencimiento.getTime()));
 
   tareas.push({ nombre: nombreTarea, vencimiento: fechaVencimiento });
   alert(`Tarea "${nombreTarea}" agregada.`);
@@ -17,66 +46,77 @@ function ingresarTiempo() {
   let seguirIngresandoTiempo = true;
 
   while (seguirIngresandoTiempo) {
-    let actividad = prompt(
-      'Esto es un organizador de tiempo para tus actividades diaras, por favor ingrese el nombre de la Actividad que realizarás o escribe "salir" para finalizar.'
-    );
-    if (actividad === '' || actividad === null) {
-      alert('Ingrese un dato válido.');
-      continue;
-    }
-    if (actividad === 'salir') {
+    let actividad;
+    do {
+      actividad = prompt(
+        'Ingrese el nombre de la Actividad o "salir" para finalizar:'
+      );
+      if (actividad === null || actividad.trim() === '') {
+        alert('Ingrese un dato válido para la Actividad.');
+      }
+    } while (actividad === null || actividad.trim() === '');
+
+    if (actividad.toLowerCase() === 'salir') {
       break;
     }
 
-    let tiempos = prompt(
-      "Ingrese el tiempo en minutos que le dedicarás a realizar dicha Actividad o escriba 'salir' para finalizar."
-    );
+    let tiempos;
+    do {
+      tiempos = prompt(
+        "Ingrese el tiempo en minutos para la Actividad o 'salir' para finalizar:"
+      );
+      if (tiempos === null || tiempos.trim() === '') {
+        alert('Ingrese un dato válido para el tiempo.');
+      }
+    } while (tiempos === null || tiempos.trim() === '');
 
-    if (tiempos === 'salir') {
+    if (tiempos.toLowerCase() === 'salir') {
       break;
     }
+
     tiempos = parseInt(tiempos);
-
-    if (isNaN(tiempos) || tiempos < 1 || tiempos === '') {
+    if (isNaN(tiempos) || tiempos < 1) {
       alert('Tiempo no válido, ingrese nuevamente.');
+      continue; // Skip to the next iteration
     }
 
-    if (!isNaN(tiempos)) {
-      tiempo = tiempo + tiempos;
-    }
+    tiempo += tiempos; // Accumulate valid time
+    let tiempoEnHoras = tiempo / 60;
 
-    tiempoEnHoras = tiempo / 60;
     console.log(
-      `Con la Actividad "${actividad}" tienes ${tiempoEnHoras} horas acumuladas en tu día.`
+      `Con la Actividad "${actividad}" tienes ${tiempoEnHoras.toFixed(
+        2
+      )} horas acumuladas en tu día.`
     );
-    alert(
-      `Ha agregado la actividad "${actividad}" a tu lista de Actividades correctamente.`
+    alert(`Ha agregado la actividad "${actividad}" correctamente.`);
+
+    let respuesta;
+    do {
+      respuesta = prompt(
+        "¿Quieres seguir agregando Actividades? escribe 'si' o 'no'."
+      );
+      if (respuesta === null || respuesta.trim() === '') {
+        alert('Por favor, ingrese "si" o "no".');
+      }
+    } while (
+      respuesta === null ||
+      respuesta.trim() === '' ||
+      (respuesta.toLowerCase() !== 'si' && respuesta.toLowerCase() !== 'no')
     );
 
-    let respuesta = prompt(
-      "¿Quieres seguir agregando Actividades a tu día? escribe 'si' o 'no'."
-    );
-    if (respuesta === 'si') {
-      seguirIngresandoTiempo = true;
-    }
-
-    if (respuesta === 'no') {
+    if (respuesta.toLowerCase() === 'no') {
       seguirIngresandoTiempo = false;
-    }
-
-    if (respuesta === '' || respuesta === null) {
-      seguirIngresandoTiempo = true;
-      alert('Ingrese un dato válido.');
     }
   }
 
   alert(
-    `El tiempo que dedicarás a tus Actividades diarias es de: ${tiempoEnHoras} horas.`
+    `El tiempo total que dedicarás a tus Actividades diarias es de: ${(
+      tiempo / 60
+    ).toFixed(2)} horas.`
   );
 }
-
 // Función para mostrar tareas
-function mostrarTareas(tareas) {
+function mostrarTareas() {
   const hoy = new Date();
   let mensaje = 'Lista de tareas:\n';
 
@@ -140,10 +180,26 @@ function eliminarTarea(nombre) {
 
   if (indice !== -1) {
     tareas.splice(indice, 1);
-    alert(`Tarea ${nombre} eliminada conb exito`);
+    alert(`Tarea ${nombre} eliminada con exito`);
     mostrarTareas(tareas);
   } else {
     alert(`Producto ${nombre} no encontrado`);
+  }
+}
+
+function encontrarTareasPorVencer(vencimientoMaximo) {
+  const hoy = new Date();
+  const tareasPorVencer = tareas.filter(
+    (tarea) => (tarea.vencimiento - hoy) / (1000 * 60 * 60) <= vencimientoMaximo
+  );
+  console.log(tareasPorVencer);
+  if (tareasPorVencer.length >= 1) {
+    let mensaje = `Lista de tareas próximas a vencer dentro de ${vencimientoMaximo} Horas:\n`;
+    tareasPorVencer.map((tareas) => (mensaje += `${tareas.nombre}\n`));
+
+    alert(mensaje);
+  } else {
+    alert(`No hay tareas por vencer dentro de ${vencimientoMaximo} horas`);
   }
 }
 
@@ -153,7 +209,7 @@ function gestionarTareas() {
 
   do {
     opcion = prompt(
-      '¿Qué quieres hacer?\n1. Agregar tarea por fecha y hora \n2. Sumador de actividades que realizarás ahora YA \n3. Mostrar tareas \n4.Eliminar Tareas \n5.Salir'
+      '¿Qué quieres hacer?\n1. Agregar tarea por fecha y hora \n2. Sumador de tareas que realizarás ahora YA \n3. Mostrar tareas \n4. Eliminar Tareas\n5. Tareas próximas a vencer \n6. Salir'
     );
     if (opcion === '1') agregarTarea(tareas);
     if (opcion === '2') ingresarTiempo();
@@ -163,8 +219,13 @@ function gestionarTareas() {
         'Ingrese el nombre de la tarea a eliminar'
       );
       eliminarTarea(tareaPorEliminar);
+    } else if (opcion === '5') {
+      const tiempoMaximoTareasPorVencer = prompt(
+        'Ingrese el tiempo máximo de expiración en HORAS de las tareas pendientes'
+      );
+      encontrarTareasPorVencer(tiempoMaximoTareasPorVencer);
     }
-  } while (opcion !== '5');
+  } while (opcion !== '6');
 
   alert('Saliendo de la aplicación.');
 }
