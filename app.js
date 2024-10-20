@@ -25,7 +25,7 @@ function agregarTarea() {
   // Bucle para asegurar que se ingrese una fecha válida
   do {
     const fechaInput = prompt(
-      '¿Cuál es la fecha de vencimiento? (yyyy-mm-ddThh:mm:ss)'
+      '¿Cuál es la fecha de vencimiento? (yyyy-mm-ddThh:mm:ss) o pulse "Cancelar"'
     );
     if (fechaInput === null) {
       gestionarTareas();
@@ -65,22 +65,25 @@ function ingresarTiempo() {
       tiempos = prompt(
         "Ingrese el tiempo en minutos para la Actividad o 'salir' para finalizar:"
       );
-      if (tiempos === null || tiempos.trim() === '') {
+      if (
+        tiempos === null ||
+        tiempos.trim() === '' ||
+        (tiempos !== 'salir' && (isNaN(tiempos) || tiempos < 1))
+      ) {
         alert('Ingrese un dato válido para el tiempo.');
       }
-    } while (tiempos === null || tiempos.trim() === '');
-
+    } while (
+      tiempos === null ||
+      tiempos.trim() === '' ||
+      (tiempos !== 'salir' && (isNaN(tiempos) || tiempos < 1))
+    );
+    
     if (tiempos.toLowerCase() === 'salir') {
       break;
     }
 
     tiempos = parseInt(tiempos);
-    if (isNaN(tiempos) || tiempos < 1) {
-      alert('Tiempo no válido, ingrese nuevamente.');
-      continue; // Skip to the next iteration
-    }
-
-    tiempo += tiempos; // Accumulate valid time
+    tiempo += tiempos; // Tiempo válido acumulado
     let tiempoEnHoras = tiempo / 60;
 
     console.log(
@@ -169,8 +172,11 @@ function mostrarTareas() {
       mensaje += `${tarea.nombre} - EXPIRO hace ${AbsDiasRestantes} días.\n`;
     }
   });
-
-  alert(mensaje || 'No hay tareas.');
+  if(tareas.length >= 1){
+  alert(mensaje);
+  }else{
+    alert('No hay tareas.');
+  }
 }
 
 function eliminarTarea(nombre) {
@@ -183,7 +189,7 @@ function eliminarTarea(nombre) {
     alert(`Tarea ${nombre} eliminada con exito`);
     mostrarTareas(tareas);
   } else {
-    alert(`Producto ${nombre} no encontrado`);
+    alert(`Tarea ${nombre} no encontrada`);
   }
 }
 
@@ -215,14 +221,42 @@ function gestionarTareas() {
     if (opcion === '2') ingresarTiempo();
     else if (opcion === '3') mostrarTareas(tareas);
     else if (opcion === '4') {
-      const tareaPorEliminar = prompt(
-        'Ingrese el nombre de la tarea a eliminar'
-      );
-      eliminarTarea(tareaPorEliminar);
+      let tarea;
+
+      do {
+        tarea = prompt('Ingrese el nombre de la tarea a eliminar o pulse "Cancelar"');
+
+        if (tarea === null) {
+          gestionarTareas();
+          return;
+        } else if (tarea.trim() === '') {
+          alert('Por favor ingrese el nombre de una tarea');
+          tarea = null;
+        }
+      } while (tarea === null);
+      eliminarTarea(tarea);
     } else if (opcion === '5') {
-      const tiempoMaximoTareasPorVencer = prompt(
-        'Ingrese el tiempo máximo de expiración en HORAS de las tareas pendientes'
-      );
+      let tiempoMaximoTareasPorVencer;
+
+      do {
+        tiempoMaximoTareasPorVencer = prompt(
+          'Ingrese el tiempo máximo de expiración en HORAS de las tareas pendientes o presiona "Cancelar"'
+        );
+
+        // Si el usuario presiona "Cancelar", se vuelve a gestionar tareas
+        if (tiempoMaximoTareasPorVencer === null) {
+          gestionarTareas(); // Regresar a la función principal
+          return; // Salir de la opción actual
+        } else if (
+          tiempoMaximoTareasPorVencer.trim() === '' ||
+          isNaN(tiempoMaximoTareasPorVencer) ||
+          Number(tiempoMaximoTareasPorVencer) < 0
+        ) {
+          alert('Por favor, ingrese un tiempo válido (número positivo).');
+          tiempoMaximoTareasPorVencer = null; // Forzar a que se repita el bucle
+        }
+      } while (tiempoMaximoTareasPorVencer === null);
+
       encontrarTareasPorVencer(tiempoMaximoTareasPorVencer);
     }
   } while (opcion !== '6');
