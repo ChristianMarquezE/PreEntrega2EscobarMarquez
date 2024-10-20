@@ -6,7 +6,8 @@ function agregarTarea() {
   // Bucle para asegurar que se ingrese un nombre válido
   do {
     nombreTarea = prompt('¿Cuál es el nombre de la tarea? o escribe "salir"');
-    if (nombreTarea === null) {// Si el usuario cierra el prompt
+    if (nombreTarea === null) {
+      // Si el usuario cierra el prompt
       return; // Salir de la función
     }
     if (nombreTarea.trim() === '') {
@@ -74,7 +75,7 @@ function ingresarTiempo() {
       tiempos.trim() === '' ||
       (tiempos !== 'salir' && (isNaN(tiempos) || tiempos < 1))
     );
-    
+
     if (tiempos.toLowerCase() === 'salir') {
       break;
     }
@@ -169,9 +170,9 @@ function mostrarTareas() {
       mensaje += `${tarea.nombre} - EXPIRO hace ${AbsDiasRestantes} días.\n`;
     }
   });
-  if(tareas.length >= 1){
-  alert(mensaje);
-  }else{
+  if (tareas.length >= 1) {
+    alert(mensaje);
+  } else {
     alert('No hay tareas.');
   }
 }
@@ -221,7 +222,9 @@ function gestionarTareas() {
       let tarea;
 
       do {
-        tarea = prompt('Ingrese el nombre de la tarea a eliminar o pulse "Cancelar"');
+        tarea = prompt(
+          'Ingrese el nombre de la tarea a eliminar o pulse "Cancelar"'
+        );
 
         if (tarea === null) {
           gestionarTareas();
