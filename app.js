@@ -6,8 +6,7 @@ function agregarTarea() {
   // Bucle para asegurar que se ingrese un nombre válido
   do {
     nombreTarea = prompt('¿Cuál es el nombre de la tarea? o escribe "salir"');
-    if (nombreTarea === null) {
-      gestionarTareas(); // Si el usuario cierra el prompt
+    if (nombreTarea === null) {// Si el usuario cierra el prompt
       return; // Salir de la función
     }
     if (nombreTarea.trim() === '') {
@@ -16,7 +15,6 @@ function agregarTarea() {
   } while (nombreTarea.trim() === '');
 
   if (nombreTarea.toLowerCase() === 'salir') {
-    gestionarTareas();
     return;
   }
 
@@ -28,7 +26,6 @@ function agregarTarea() {
       '¿Cuál es la fecha de vencimiento? (yyyy-mm-ddThh:mm:ss) o pulse "Cancelar"'
     );
     if (fechaInput === null) {
-      gestionarTareas();
       return; // Salir de la función
     }
     fechaVencimiento = new Date(fechaInput);
