@@ -130,7 +130,6 @@ function mostrarTareas() {
     const CeilMinutosRestantes = Math.floor(
       (tarea.vencimiento - hoy) / (1000 * 60)
     );
-
     const SegundosRestantes = (tarea.vencimiento - hoy) / 1000;
     const CeilSegundosRestantes = Math.floor((tarea.vencimiento - hoy) / 1000);
 
@@ -147,49 +146,161 @@ function mostrarTareas() {
       (tarea.vencimiento - hoy) / (1000 * 60 * 60 * 24)
     );
     const DiasTruncado = Math.trunc(DiasRestantes);
-    const AbsDiasTruncado = Math.trunc(AbsDiasRestantes)
+    const AbsDiasTruncado = Math.trunc(AbsDiasRestantes);
     const HorasTruncado = Math.trunc(HorasRestantes);
     const AbsHorasTruncado = Math.trunc(AbsHorasRestantes);
     const MinutosTruncado = Math.trunc(MinutosRestantes);
     const AbsMinutosTruncado = Math.trunc(AbsMinutosRestantes);
 
+    //if (DiasRestantes > 1) {
+    // mensaje += `${tarea.nombre} - Vence en ${CeilDiasRestantes} días.\n`;
+    //}
 
+    const HorasRestantesdeDia = (DiasRestantes - DiasTruncado) * 24;
+    const MinutosRestantesdeDia =
+      (HorasRestantesdeDia - Math.trunc(HorasRestantesdeDia)) * 60;
+    if (DiasRestantes > 1 && MinutosRestantesdeDia < 1 && HorasRestantes > 1) {
+      mensaje += `${
+        tarea.nombre
+      } - Vence en ${DiasTruncado} días y ${Math.trunc(
+        HorasRestantesdeDia
+      )} horas\n`;
+    } else if (DiasRestantes > 1 && HorasRestantesdeDia < 1) {
+      mensaje += `${
+        tarea.nombre
+      } - Vence en ${DiasTruncado} días y ${Math.trunc(
+        Math.trunc(MinutosRestantesdeDia)
+      )} minutos\n`;
+    } else if (DiasRestantes > 1 && MinutosRestantesdeDia < 1) {
+      mensaje += `${tarea.nombre} - Vence en ${DiasTruncado} días\n`;
+    } else if (DiasRestantes > 1) {
+      mensaje += `${tarea.nombre} - Vence en ${DiasTruncado} días, ${Math.trunc(
+        HorasRestantesdeDia
+      )} horas y ${Math.trunc(MinutosRestantesdeDia)} minutos  \n`;
+    }
 
-    const HorasRestantesdeDia = Math.trunc((DiasRestantes - DiasTruncado) * 24);
-    const MinutosRestantesdeDia = Math.trunc(((DiasRestantes - DiasTruncado) * 24 - HorasRestantesdeDia) * 60)
-     if (DiasRestantes > 1 && MinutosRestantesdeDia <= 0) {
-       mensaje += `${tarea.nombre} - Vence en ${DiasTruncado} días, ${HorasRestantesdeDia} horas\n`;
-     } 
-     else if(DiasRestantes > 1 && HorasRestantesdeDia <= 0) {
-       mensaje += `${tarea.nombre} - Vence en ${DiasTruncado} días y ${MinutosRestantesdeDia} minutos\n`;
-     }
-     else if(DiasRestantes > 1 && MinutosRestantesdeDia <= 0) {
-       mensaje += `${tarea.nombre} - Vence en ${DiasTruncado} días\n`;
-     } 
-    else if (DiasRestantes > 1) {
-      mensaje += `${tarea.nombre} - Vence en ${DiasTruncado} días, ${HorasRestantesdeDia} horas y ${MinutosRestantesdeDia} minutos  \n`;
-    } 
-   
-    else if (HorasRestantes > 1) {
-      mensaje += `${tarea.nombre} - Vence en ${CeilHorasRestantes.toFixed(
-        2
-      )} horas.\n`;
-    } else if (MinutosRestantes > 1) {
-      mensaje += `${tarea.nombre} - Vence en ${CeilMinutosRestantes} minutos.\n`;
-    } else if (SegundosRestantes > 1) {
+    // else if (HorasRestantes > 1) {
+    //   mensaje += `${tarea.nombre} - Vence en ${CeilHorasRestantes.toFixed(
+    //     2
+    //   )} horas.\n`;
+
+    const MinutosRestantesdeHora = (HorasRestantes - HorasTruncado) * 60;
+    const SegundosRestantesdeHora =
+      (MinutosRestantesdeHora - Math.trunc(MinutosRestantesdeHora)) * 60;
+    if (HorasRestantes > 1 && Math.trunc(SegundosRestantesdeHora && HorasRestantes >= 23) < 1 && SegundosRestantesdeHora < 1) {
+      mensaje += `${
+        tarea.nombre
+      } - Vence en ${HorasTruncado} Horas y ${Math.trunc(
+        MinutosRestantesdeHora
+      )} minutos\n`;
+    } else if (HorasRestantes > 1 && Math.trunc(MinutosRestantesdeHora) < 1 && HorasRestantes >= 23 && MinutosRestantes < 1) {
+      mensaje += `${
+        tarea.nombre
+      } - Vence en ${HorasTruncado} Horas y ${Math.trunc(
+        SegundosRestantesdeHora
+      )} segundos\n`;
+    } else if (HorasRestantes > 1 && Math.trunc(SegundosRestantesdeHora && HorasRestantes >= 23) < 1 && MinutosRestantes < 1) {
+      mensaje += `${tarea.nombre} - Vence en ${HorasTruncado} Horas\n`;
+    } else if (HorasRestantes > 1 && HorasRestantes <= 23) {
+      mensaje += `${
+        tarea.nombre
+      } - Vence en ${HorasTruncado} horas, ${Math.trunc(
+        MinutosRestantesdeHora
+      )} minutos y ${Math.trunc(SegundosRestantesdeHora)} segundos\n`;
+    }
+
+    // else if (MinutosRestantes > 1) {
+    //   mensaje += `${tarea.nombre} - Vence en ${CeilMinutosRestantes} minutos.\n`;
+    // }
+
+    const SegundosRestantesdeMinuto = (MinutosRestantes - MinutosTruncado) * 60;
+
+    if (MinutosRestantes > 1 && MinutosRestantes <= 59) {
+      mensaje += `${
+        tarea.nombre
+      } - Vence en ${MinutosTruncado} Minutos y ${Math.trunc(
+        SegundosRestantesdeMinuto
+      )} segundos \n`;
+      //Segundos restantes
+    } else if (SegundosRestantes > 1 && SegundosRestantes <= 59) {
       mensaje += `${tarea.nombre} - Vence en ${CeilSegundosRestantes} segundos.\n`;
-    } else if (SegundosRestantes < -1 && SegundosRestantes >= -59) {
-      mensaje += `${tarea.nombre} - EXPIRO hace ${AbsSegundosRestantes} segundos.\n`;
-    } else if (MinutosRestantes < -1 && MinutosRestantes >= -59) {
-      mensaje += `${tarea.nombre} - EXPIRO hace ${AbsMinutosRestantes} minutos.\n`;
-    } else if (HorasRestantes < -1 && HorasRestantes >= -23) {
-      mensaje += `${tarea.nombre} - EXPIRO hace ${AbsHorasRestantes.toFixed(
-        2
-      )} horas.\n`;
+    }
+/* =====================================
+=               EXPIRACIONES                =
+===================================== */
+
+    //else if (DiasRestantes < -1) {
+    //   mensaje += `${tarea.nombre} - EXPIRO hace ${AbsDiasRestantes.toFixed(
+    //     2
+    //   )} días.\n`;
+    // }
+    else if (DiasRestantes < -1 && HorasRestantesdeDia > -1) {
+      mensaje += `${tarea.nombre} - EXPIRO hace ${Math.abs(
+        DiasTruncado
+      )} días y ${Math.abs(
+        Math.trunc(math.trunc(MinutosRestantesdeDia))
+      )} minutos\n`;
+    } else if (DiasRestantes < -1 && Math.trunc(MinutosRestantesdeDia) > -1) {
+      mensaje += `${tarea.nombre} - EXPIRO hace ${Math.abs(
+        DiasTruncado
+      )} días\n`;
     } else if (DiasRestantes < -1) {
-      mensaje += `${tarea.nombre} - EXPIRO hace ${AbsDiasRestantes.toFixed(
-        2
-      )} días.\n`;
+      mensaje += `${tarea.nombre} - EXPIRO hace ${Math.abs(
+        DiasTruncado
+      )} días, ${Math.abs(Math.trunc(HorasRestantesdeDia))} horas y ${Math.abs(
+        Math.trunc(MinutosRestantesdeDia)
+      )} minutos  \n`;
+    } else if (DiasRestantes < -1 && Math.trunc(MinutosRestantesdeDia) > -1) {
+      mensaje += `${tarea.nombre} - EXPIRO hace ${Math.abs(
+        DiasTruncado
+      )} días y ${Math.abs(Math.trunc(HorasRestantesdeDia))} horas\n`;
+    }
+
+    //else if (HorasRestantes < -1 && HorasRestantes >= -23) {
+    //   mensaje += `${tarea.nombre} - EXPIRO hace ${AbsHorasRestantes.toFixed(
+    //     2
+    //   )} horas.\n`;
+    // }
+    else if (HorasRestantes < -1 && Math.trunc(MinutosRestantesdeHora) >= 0 && HorasRestantes >= -23) {
+      mensaje += `${tarea.nombre} - EXPIRO hace ${Math.abs(
+        HorasTruncado
+      )} Horas y ${Math.abs(Math.trunc(SegundosRestantesdeHora))} segundos\n`;
+    } else if (
+      HorasRestantes < -1 &&
+      Math.trunc(SegundosRestantesdeHora) >= 0 && HorasRestantes >= -23 && MinutosRestantes > -1
+    ) {
+      mensaje += `${tarea.nombre} - EXPIRO hace ${Math.abs(
+        HorasTruncado
+      )} Horas\n`;
+    } else if (HorasRestantes < -1 && HorasRestantes >= -23) {
+      mensaje += `${tarea.nombre} - EXPIRO hace ${Math.abs(
+        HorasTruncado
+      )} horas, ${Math.abs(
+        Math.trunc(MinutosRestantesdeHora)
+      )} minutos y ${Math.abs(Math.trunc(SegundosRestantesdeHora))} segundos\n`;
+    } else if (
+      HorasRestantes < -1 &&
+      Math.trunc(SegundosRestantesdeHora) >= 0 && HorasRestantes >= -23
+    ) {
+      mensaje += `${tarea.nombre} - EXPIRO hace ${Math.abs(
+        HorasTruncado
+      )} Horas y ${Math.abs(Math.trunc(MinutosRestantesdeHora))} minutos\n`;
+    }
+
+    //  } else if (MinutosRestantes < -1 && MinutosRestantes >= -59) {
+    //   mensaje += `${tarea.nombre} - EXPIRO hace ${AbsMinutosRestantes} minutos.\n`;
+    // }
+    else if (MinutosRestantes < -1 && MinutosRestantes >= -59) {
+      mensaje += `${
+        tarea.nombre
+      } - EXPIRO hace ${AbsMinutosTruncado} Minutos y ${Math.abs(
+        Math.trunc(SegundosRestantesdeMinuto)
+      )} segundos \n`;
+    }
+
+    //Segundos expirada
+    else if (SegundosRestantes < -1 && SegundosRestantes >= -59) {
+      mensaje += `${tarea.nombre} - EXPIRO hace ${AbsSegundosRestantes} segundos.\n`;
     }
   });
   if (tareas.length >= 1) {
