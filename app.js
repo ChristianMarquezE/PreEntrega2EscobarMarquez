@@ -123,15 +123,9 @@ function mostrarTareas() {
 
   tareas.forEach((tarea) => {
     const DiasRestantes = (tarea.vencimiento - hoy) / (1000 * 60 * 60 * 24);
-    const CeilDiasRestantes = Math.floor(
-      (tarea.vencimiento - hoy) / (1000 * 60 * 60 * 24)
-    );
-
+    const CeilDiasRestantes = (tarea.vencimiento - hoy) / (1000 * 60 * 60 * 24);
     const HorasRestantes = (tarea.vencimiento - hoy) / (1000 * 60 * 60);
-    const CeilHorasRestantes = Math.floor(
-      (tarea.vencimiento - hoy) / (1000 * 60 * 60)
-    );
-
+    const CeilHorasRestantes = (tarea.vencimiento - hoy) / (1000 * 60 * 60);
     const MinutosRestantes = (tarea.vencimiento - hoy) / (1000 * 60);
     const CeilMinutosRestantes = Math.floor(
       (tarea.vencimiento - hoy) / (1000 * 60)
@@ -146,16 +140,40 @@ function mostrarTareas() {
     const AbsMinutosRestantes = Math.floor(
       Math.abs((tarea.vencimiento - hoy) / (1000 * 60))
     );
-    const AbsHorasRestantes = Math.floor(
-      Math.abs((tarea.vencimiento - hoy) / (1000 * 60 * 60))
+    const AbsHorasRestantes = Math.abs(
+      tarea.vencimiento - hoy / (1000 * 60 * 60)
     );
-    const AbsDiasRestantes = Math.floor(
-      Math.abs((tarea.vencimiento - hoy) / (1000 * 60 * 60 * 24))
+    const AbsDiasRestantes = Math.abs(
+      (tarea.vencimiento - hoy) / (1000 * 60 * 60 * 24)
     );
-    if (DiasRestantes > 1) {
-      mensaje += `${tarea.nombre} - Vence en ${CeilDiasRestantes} días.\n`;
-    } else if (HorasRestantes > 1) {
-      mensaje += `${tarea.nombre} - Vence en ${CeilHorasRestantes} horas.\n`;
+    const DiasTruncado = Math.trunc(DiasRestantes);
+    const AbsDiasTruncado = Math.trunc(AbsDiasRestantes)
+    const HorasTruncado = Math.trunc(HorasRestantes);
+    const AbsHorasTruncado = Math.trunc(AbsHorasRestantes);
+    const MinutosTruncado = Math.trunc(MinutosRestantes);
+    const AbsMinutosTruncado = Math.trunc(AbsMinutosRestantes);
+
+
+
+    const HorasRestantesdeDia = Math.trunc((DiasRestantes - DiasTruncado) * 24);
+    const MinutosRestantesdeDia = Math.trunc(((DiasRestantes - DiasTruncado) * 24 - HorasRestantesdeDia) * 60)
+     if (DiasRestantes > 1 && MinutosRestantesdeDia <= 0) {
+       mensaje += `${tarea.nombre} - Vence en ${DiasTruncado} días, ${HorasRestantesdeDia} horas\n`;
+     } 
+     else if(DiasRestantes > 1 && HorasRestantesdeDia <= 0) {
+       mensaje += `${tarea.nombre} - Vence en ${DiasTruncado} días y ${MinutosRestantesdeDia} minutos\n`;
+     }
+     else if(DiasRestantes > 1 && MinutosRestantesdeDia <= 0) {
+       mensaje += `${tarea.nombre} - Vence en ${DiasTruncado} días\n`;
+     } 
+    else if (DiasRestantes > 1) {
+      mensaje += `${tarea.nombre} - Vence en ${DiasTruncado} días, ${HorasRestantesdeDia} horas y ${MinutosRestantesdeDia} minutos  \n`;
+    } 
+   
+    else if (HorasRestantes > 1) {
+      mensaje += `${tarea.nombre} - Vence en ${CeilHorasRestantes.toFixed(
+        2
+      )} horas.\n`;
     } else if (MinutosRestantes > 1) {
       mensaje += `${tarea.nombre} - Vence en ${CeilMinutosRestantes} minutos.\n`;
     } else if (SegundosRestantes > 1) {
@@ -165,9 +183,13 @@ function mostrarTareas() {
     } else if (MinutosRestantes < -1 && MinutosRestantes >= -59) {
       mensaje += `${tarea.nombre} - EXPIRO hace ${AbsMinutosRestantes} minutos.\n`;
     } else if (HorasRestantes < -1 && HorasRestantes >= -23) {
-      mensaje += `${tarea.nombre} - EXPIRO hace ${AbsHorasRestantes} horas.\n`;
+      mensaje += `${tarea.nombre} - EXPIRO hace ${AbsHorasRestantes.toFixed(
+        2
+      )} horas.\n`;
     } else if (DiasRestantes < -1) {
-      mensaje += `${tarea.nombre} - EXPIRO hace ${AbsDiasRestantes} días.\n`;
+      mensaje += `${tarea.nombre} - EXPIRO hace ${AbsDiasRestantes.toFixed(
+        2
+      )} días.\n`;
     }
   });
   if (tareas.length >= 1) {
@@ -261,7 +283,7 @@ function gestionarTareas() {
     }
   } while (opcion !== '6');
 
-  alert('Saliendo de la aplicación.');
+  alert('Saliendo de la aplicación...');
 }
 // Iniciar la aplicación
 gestionarTareas();
