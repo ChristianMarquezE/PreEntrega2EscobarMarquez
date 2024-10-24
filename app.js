@@ -24,7 +24,7 @@ function agregarTarea() {
   // Bucle para asegurar que se ingrese una fecha válida
   do {
     const fechaInput = prompt(
-      '¿Cuál es la fecha de vencimiento? (yyyy-mm-ddThh:mm:ss) o pulse "Cancelar"'
+      '¿Cuál es la fecha de vencimiento? (aaaa-mm-ddThh:mm) o pulse "Cancelar"'
     );
     if (fechaInput === null) {
       return; // Salir de la función
@@ -116,8 +116,33 @@ function ingresarTiempo() {
     ).toFixed(2)} horas.`
   );
 }
-// Función para mostrar tareas
 function mostrarTareas() {
+  let mensaje = 'Lista de tareas:\n';
+
+  tareas.forEach((tarea) => {
+    const fechaVencimiento = formatearFecha(tarea.vencimiento);
+    mensaje += `${tarea.nombre} - ${fechaVencimiento}\n`;
+  });
+
+  if (tareas.length >= 1) {
+    alert(mensaje);
+  } else {
+    alert('No hay tareas.');
+  }
+}
+
+function formatearFecha(fecha) {
+  const opciones = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  };
+  return new Intl.DateTimeFormat('es-ES', opciones).format(fecha);
+}
+// Función para saber en cuánto tiempo vencen mis tareas
+function mostrarTareasVencimiento() {
   const hoy = new Date();
   let mensaje = 'Lista de tareas:\n';
 
@@ -261,6 +286,61 @@ function mostrarTareas() {
     } else if (SegundosRestantes >= 1 && SegundosRestantes < 60) {
       mensaje += `${tarea.nombre} - Vence en ${CeilSegundosRestantes} segundos.\n`;
     }
+  });
+  if (tareas.length >= 1) {
+    alert(mensaje);
+  } else {
+    alert('No hay tareas.');
+  }
+}
+function mostrarTareasVencidas() {
+  const hoy = new Date();
+  let mensaje = 'Lista de tareas:\n';
+
+  /* =====================================
+  =               Bucle                =
+  ===================================== */
+
+  tareas.forEach((tarea) => {
+    /* =====================================
+    =               Variables                =
+    ===================================== */
+
+    const DiasRestantes = (tarea.vencimiento - hoy) / (1000 * 60 * 60 * 24);
+
+    const HorasRestantes = (tarea.vencimiento - hoy) / (1000 * 60 * 60);
+
+    const MinutosRestantes = (tarea.vencimiento - hoy) / (1000 * 60);
+
+    const SegundosRestantes = (tarea.vencimiento - hoy) / 1000;
+    const CeilSegundosRestantes = Math.floor((tarea.vencimiento - hoy) / 1000);
+    const AbsMinutosRestantes = Math.floor(
+      Math.abs((tarea.vencimiento - hoy) / (1000 * 60))
+    );
+
+    const DiasTruncado = Math.trunc(DiasRestantes);
+    const HorasTruncado = Math.trunc(HorasRestantes);
+    const MinutosTruncado = Math.trunc(MinutosRestantes);
+    const AbsMinutosTruncado = Math.trunc(AbsMinutosRestantes);
+
+    /* =====================================
+    =        VENCIMIENTOS PROXIMOS               =
+    ===================================== */
+
+    //if (DiasRestantes > 1) {
+    // mensaje += `${tarea.nombre} - Vence en ${CeilDiasRestantes} días.\n`;
+    //}
+
+    const HorasRestantesdeDia = (DiasRestantes - DiasTruncado) * 24;
+    const MinutosRestantesdeDia =
+      (HorasRestantesdeDia - Math.trunc(HorasRestantesdeDia)) * 60;
+
+    const MinutosRestantesdeHora = (HorasRestantes - HorasTruncado) * 60;
+    const SegundosRestantesdeHora =
+      (MinutosRestantesdeHora - Math.trunc(MinutosRestantesdeHora)) * 60;
+
+    const SegundosRestantesdeMinuto = (MinutosRestantes - MinutosTruncado) * 60;
+
     /* =====================================
 =               EXPIRACIONES VENCIDAS               =
 ===================================== */
@@ -270,7 +350,7 @@ function mostrarTareas() {
     //     2
     //   )} días.\n`;
     // }
-    else if (
+    if (
       DiasRestantes <= -1 &&
       HorasRestantesdeDia <= -1 &&
       MinutosRestantesdeDia > -1
@@ -377,7 +457,6 @@ function mostrarTareas() {
     alert('No hay tareas.');
   }
 }
-
 function eliminarTarea(nombre) {
   const indice = tareas.findIndex(
     (tarea) => tarea.nombre.toLowerCase() === nombre.toLowerCase()
@@ -395,7 +474,9 @@ function eliminarTarea(nombre) {
 function encontrarTareasPorVencer(vencimientoMaximo) {
   const hoy = new Date();
   const tareasPorVencer = tareas.filter(
-    (tarea) => (tarea.vencimiento - hoy) / (1000 * 60 * 60) <= vencimientoMaximo
+    (tarea) =>
+      (tarea.vencimiento - hoy) / (1000 * 60 * 60) <= vencimientoMaximo &&
+      (tarea.vencimiento - hoy) / (1000 * 60 * 60) > 0
   );
   console.log(tareasPorVencer);
   if (tareasPorVencer.length >= 1) {
@@ -414,12 +495,14 @@ function gestionarTareas() {
 
   do {
     opcion = prompt(
-      '¿Qué quieres hacer?\n1. Agregar tarea por fecha y hora \n2. Sumador de tareas que realizarás ahora YA \n3. Mostrar tareas \n4. Eliminar Tareas\n5. Tareas próximas a vencer \n6. Salir'
+      '¿Qué quieres hacer?\n1. Agregar tarea por fecha y hora \n2. Sumador de tareas que realizarás ahora YA \n3. Mostrar Tareas\n4. ¿En cuánto tiempo vencen mis tareas? \n5. Tareas Vencidas\n6. Eliminar Tareas\n7. Tareas próximas a vencer \n8. Salir'
     );
     if (opcion === '1') agregarTarea(tareas);
     if (opcion === '2') ingresarTiempo();
     else if (opcion === '3') mostrarTareas(tareas);
-    else if (opcion === '4') {
+    else if (opcion === '4') mostrarTareasVencimiento(tareas);
+    else if (opcion === '5') mostrarTareasVencidas(tareas);
+    else if (opcion === '6') {
       let tarea;
 
       do {
@@ -436,7 +519,7 @@ function gestionarTareas() {
         }
       } while (tarea === null);
       eliminarTarea(tarea);
-    } else if (opcion === '5') {
+    } else if (opcion === '7') {
       let tiempoMaximoTareasPorVencer;
 
       do {
@@ -460,7 +543,7 @@ function gestionarTareas() {
 
       encontrarTareasPorVencer(tiempoMaximoTareasPorVencer);
     }
-  } while (opcion !== '6');
+  } while (opcion !== '8');
 
   alert('Saliendo de la aplicación...');
 }
