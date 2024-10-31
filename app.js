@@ -176,10 +176,6 @@ function mostrarTareasVencimiento() {
     =        VENCIMIENTOS PROXIMOS               =
     ===================================== */
 
-    //if (DiasRestantes > 1) {
-    // mensaje += `${tarea.nombre} - Vence en ${CeilDiasRestantes} días.\n`;
-    //}
-
     const HorasRestantesdeDia = (DiasRestantes - DiasTruncado) * 24;
     const MinutosRestantesdeDia =
       (HorasRestantesdeDia - Math.trunc(HorasRestantesdeDia)) * 60;
@@ -214,11 +210,6 @@ function mostrarTareasVencimiento() {
         HorasRestantesdeDia
       )} horas y ${Math.trunc(MinutosRestantesdeDia)} minutos  \n`;
     }
-
-    // else if (HorasRestantes > 1) {
-    //   mensaje += `${tarea.nombre} - Vence en ${CeilHorasRestantes.toFixed(
-    //     2
-    //   )} horas.\n`;
 
     const MinutosRestantesdeHora = (HorasRestantes - HorasTruncado) * 60;
     const SegundosRestantesdeHora =
@@ -259,10 +250,6 @@ function mostrarTareasVencimiento() {
         MinutosRestantesdeHora
       )} minutos y ${Math.trunc(SegundosRestantesdeHora)} segundos\n`;
     }
-
-    // else if (MinutosRestantes > 1) {
-    //   mensaje += `${tarea.nombre} - Vence en ${CeilMinutosRestantes} minutos.\n`;
-    // }
 
     const SegundosRestantesdeMinuto = (MinutosRestantes - MinutosTruncado) * 60;
     if (
@@ -327,10 +314,6 @@ function mostrarTareasVencidas() {
     =        VENCIMIENTOS PROXIMOS               =
     ===================================== */
 
-    //if (DiasRestantes > 1) {
-    // mensaje += `${tarea.nombre} - Vence en ${CeilDiasRestantes} días.\n`;
-    //}
-
     const HorasRestantesdeDia = (DiasRestantes - DiasTruncado) * 24;
     const MinutosRestantesdeDia =
       (HorasRestantesdeDia - Math.trunc(HorasRestantesdeDia)) * 60;
@@ -345,11 +328,6 @@ function mostrarTareasVencidas() {
 =               EXPIRACIONES VENCIDAS               =
 ===================================== */
 
-    //else if (DiasRestantes < -1) {
-    //   mensaje += `${tarea.nombre} - EXPIRO hace ${AbsDiasRestantes.toFixed(
-    //     2
-    //   )} días.\n`;
-    // }
     if (
       DiasRestantes <= -1 &&
       HorasRestantesdeDia <= -1 &&
@@ -382,13 +360,7 @@ function mostrarTareasVencidas() {
       )} días, ${Math.abs(Math.trunc(HorasRestantesdeDia))} horas y ${Math.abs(
         Math.trunc(MinutosRestantesdeDia)
       )} minutos  \n`;
-    }
-    //else if (HorasRestantes < -1 && HorasRestantes >= -23) {
-    //   mensaje += `${tarea.nombre} - EXPIRO hace ${AbsHorasRestantes.toFixed(
-    //     2
-    //   )} horas.\n`;
-    // }
-    else if (
+    } else if (
       HorasRestantes <= -1 &&
       MinutosRestantesdeHora <= -1 &&
       SegundosRestantesdeHora > -1 &&
@@ -421,11 +393,7 @@ function mostrarTareasVencidas() {
       )} horas, ${Math.abs(
         Math.trunc(MinutosRestantesdeHora)
       )} minutos y ${Math.abs(Math.trunc(SegundosRestantesdeHora))} segundos\n`;
-    }
-    //  } else if (MinutosRestantes < -1 && MinutosRestantes >= -59) {
-    //   mensaje += `${tarea.nombre} - EXPIRO hace ${AbsMinutosRestantes} minutos.\n`;
-    // }
-    else if (
+    } else if (
       MinutosRestantes <= -1 &&
       SegundosRestantesdeHora > -1 &&
       MinutosRestantes > -60 &&
